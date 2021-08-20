@@ -12,3 +12,6 @@ If you use the code, please cite this paper:
 @article{
 }
 ```
+
+# Contact Information. 
+Email: yannisp@bu.edu
