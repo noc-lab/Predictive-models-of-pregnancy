@@ -14,4 +14,4 @@ If you use the code, please cite this paper:
 ```
 
 # Contact Information. 
-Email: yannisp@bu.edu
+Email: Zahra Zad <zad@bu.edu>
