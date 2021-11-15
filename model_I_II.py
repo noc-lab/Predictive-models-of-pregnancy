@@ -1,13 +1,24 @@
-# Step 1: Start with the section “load dataset”:
-# -Load the dataset including the features and the label, in the format of pandas dataframe
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Nov 15 2021
 
-# Step 2: Go through the section “Statistical Feature Selection”
+@author: Zahra Zad <zad@bu.edu>
+@author: Taiyao Wang
+"""
+"""
+To use the code, you can go through the steps explained bellow and follow the detailed instructions commented in the script:
 
-# Step 3: Go through the section “implementation of the models” to implement:
-# -Full models (i.e., least parsimonious) that contain all variables selected after sStatistical Feature Selection
-# -Sparse models that contain variables selected after both Statistical Feature Selection and Recursive Feature Elimination
-# -Parsimonious models that limit recursive feature elimination to select a model with up to 15 variables
+Step 1: Start with the section “load dataset”:
+-Load the dataset including the features and the label, in the format of pandas dataframe
 
+Step 2: Go through the section “Statistical Feature Selection”
+
+Step 3: Go through the section “implementation of the models” to implement:
+-Full models (i.e., least parsimonious) that contain all variables selected after sStatistical Feature Selection
+-Sparse models that contain variables selected after both Statistical Feature Selection and Recursive Feature Elimination
+-Parsimonious models that limit recursive feature elimination to select a model with up to 15 variables
+"""
 
 #import modules we need
 
