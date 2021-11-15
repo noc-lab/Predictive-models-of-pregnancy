@@ -165,87 +165,6 @@ def df_drop(df_new, drop_cols):
     '''
     return df_new.drop(df_new.columns[df_new.columns.isin(drop_cols)], axis=1)
 
-
-# develop different ML algorithms 'LR', 'SVM', 'MLP', 'LR', or 'LGB'
-def tr_predict(df_new, col_y, target_names = ['0', '1'], model='LR',penalty='l1', cv_folds=5,scoring='roc_auc', test_size=0.2):
-    '''
-    input:
-    df_new: 2-d dataframe of the dataset after preprocessing icluding one-hot encoding and statistical feature selection
-    col_y: Labe name 
-    target_names: 0 and 1 as the label is binary: ['0', '1'] 
-    model: Type of algorithm we want to develop:  'LR', 'SVM', 'MLP', 'LR', or 'LGB'
-    penalty: Regularization norm for linear models LR and SVM:  'l1' or 'l2' 
-    cv_folds: Number of folds in cross-validation
-    scoring: Strategy to evaluate the performance of the cross-validated model on the validation set: 'roc_auc', 'f1', etc
-    test_size: Proportion of the dataset to include in the test split
-    
-    return:
-    a dataframe including the predictors' coefficients and statistics based on the selected algorithm
-    '''
-    # Standardize features by removing the mean and scaling to unit variance
-    scaler = preprocessing.StandardScaler()#MinMaxScaler    
-    
-    y= df_new[col_y].values # 1-d binary label array 
-    metrics_all=[] # a list to keep metrics calculated on the test set for each run
-    
-    my_seeds=range(2020, 2025) # the random_state that controls the shuffling applied to the data before applying the split
-    for seed in my_seeds: # we repeat the model development 5 times and we use a different seed for each run
-        
-        X = df_new.drop([col_y], axis=1).values # dataset excluding the label in the format of 2-d array
-        name_cols=df_new.drop([col_y], axis=1).columns.values # features names
-        
-        # Fits transformer to X and returns a transformed version of X
-        X = scaler.fit_transform(X)
-        
-        # Split the dataset to five random parts, where four parts constituted the training dataset, and the fifth part constituted the testing dataset
-        X_train, xtest, y_train, ytest = train_test_split(X, y, stratify=y, test_size=test_size,  random_state=seed)# Split arrays into random train and test subsets
-        
-        # train a model only using the training set
-        clf = my_train(X_train, y_train, model=model, penalty=penalty, cv=cv_folds, scoring=scoring, class_weight= 'balanced',seed=seed)    
-        
-        # test the obtained model on the test set
-        metrics_all.append(my_test(X_train, xtest, y_train, ytest, clf, target_names, model=model))
-    
-    # compute the mean and standard deviation of the model performance statistics across these five runs
-    metrics_df=pd.concat(metrics_all)
-    if if_RFE==0: # variable 'if_RFE' is defined only for handling which metrics reported if we are doing RFE or if we are not doing RFE
-        metrics_df = metrics_df[['AUC','micro_F1_score','weighted_F1_score','weighted_precision_score','weighted_recall_score']].describe().T[['mean','std']].stack().to_frame().T
-    else:
-        metrics_df = metrics_df[['AUC','micro_F1_score','weighted_F1_score']].describe().T[['mean','std']].stack().to_frame().T       
-    
-    #create the dataframe of the predictors' coefficients based on model type
-    if model=='LGB': 
-        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.feature_importances_,2))),columns=['Variable','coef_'])        
-        fig, ax = plt.subplots()
-        lgb.plot_importance(clf, ax=ax, max_num_features=100)
-        plt.title("Light GBM Feature Importance")
-    elif model=='MLP':
-        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.coefs_[0][:,0],2))),columns=['Variable','coef_'])
-    else:
-        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.coef_[0],5))),columns=['Variable','coef_']) 
-        if ((model=='LR') & (if_RFE==0)): 
-            #plot_precision_recall_curve
-            disp = plot_precision_recall_curve(clf, xtest, ytest)
-            disp.ax_.axis(ymin=0,ymax=1)
-            disp.ax_.set_title('2-class Precision-Recall curve')            
-            #calculate standard_errors 
-            predProbs = clf.predict_proba(X_train)
-            X_design = np.hstack([np.ones((X_train.shape[0], 1)), X_train])
-            V = np.product(predProbs, axis=1)
-            covLogit = np.linalg.pinv(np.dot((X_design.T * V), X_design))
-            standard_errors = np.sqrt(np.diag(covLogit))
-            df_coef_['standard_errors'] = standard_errors[1:]                
-    df_coef_['coef_abs']=df_coef_['coef_'].abs()    
-    
-    # return two dataframes
-    # one dataframe including the predictors' coefficients and statistics based on the selected algorithm
-    # the other dataframe including metrics (mean and std) evaluated on the test set
-    if ((model=='LR') & (if_RFE==0)):#when we want to report predicotrs' satandard_errors as well as their coefficients
-        return df_coef_.sort_values('coef_abs', ascending=False)[['coef_','Variable','standard_errors']], metrics_df#, scaler
-    else:
-        return df_coef_.sort_values('coef_abs', ascending=False)[['coef_','Variable']], metrics_df#, scaler
-
-
 # train a model only using the training set:
 # tune the model hyperparameters via cross-validation and returns the model with the best cross-validation score fitted on the whole training set
 def my_train(X_train, y_train, model='LR', penalty='l1', cv=5, scoring='roc_auc', class_weight= 'balanced',seed=2020):    
@@ -385,6 +304,85 @@ def my_test(X_train, xtest, y_train, ytest, clf, target_names, model='LR'):
     # returns a dataframe of performance metrics evaluated on the test set
     return cal_f1_scores_te(ytest, ytest_pred_score,thres_opt)
 
+
+# develop different ML algorithms 'LR', 'SVM', 'MLP', 'LR', or 'LGB'
+def tr_predict(df_new, col_y, target_names = ['0', '1'], model='LR',penalty='l1', cv_folds=5,scoring='roc_auc', test_size=0.2):
+    '''
+    input:
+    df_new: 2-d dataframe of the dataset after preprocessing icluding one-hot encoding and statistical feature selection
+    col_y: Labe name 
+    target_names: 0 and 1 as the label is binary: ['0', '1'] 
+    model: Type of algorithm we want to develop:  'LR', 'SVM', 'MLP', 'LR', or 'LGB'
+    penalty: Regularization norm for linear models LR and SVM:  'l1' or 'l2' 
+    cv_folds: Number of folds in cross-validation
+    scoring: Strategy to evaluate the performance of the cross-validated model on the validation set: 'roc_auc', 'f1', etc
+    test_size: Proportion of the dataset to include in the test split
+    
+    return:
+    a dataframe including the predictors' coefficients and statistics based on the selected algorithm
+    '''
+    # Standardize features by removing the mean and scaling to unit variance
+    scaler = preprocessing.StandardScaler()#MinMaxScaler    
+    
+    y= df_new[col_y].values # 1-d binary label array 
+    metrics_all=[] # a list to keep metrics calculated on the test set for each run
+    
+    my_seeds=range(2020, 2025) # the random_state that controls the shuffling applied to the data before applying the split
+    for seed in my_seeds: # we repeat the model development 5 times and we use a different seed for each run
+        
+        X = df_new.drop([col_y], axis=1).values # dataset excluding the label in the format of 2-d array
+        name_cols=df_new.drop([col_y], axis=1).columns.values # features names
+        
+        # Fits transformer to X and returns a transformed version of X
+        X = scaler.fit_transform(X)
+        
+        # Split the dataset to five random parts, where four parts constituted the training dataset, and the fifth part constituted the testing dataset
+        X_train, xtest, y_train, ytest = train_test_split(X, y, stratify=y, test_size=test_size,  random_state=seed)# Split arrays into random train and test subsets
+        
+        # train a model only using the training set
+        clf = my_train(X_train, y_train, model=model, penalty=penalty, cv=cv_folds, scoring=scoring, class_weight= 'balanced',seed=seed)    
+        
+        # test the obtained model on the test set
+        metrics_all.append(my_test(X_train, xtest, y_train, ytest, clf, target_names, model=model))
+    
+    # compute the mean and standard deviation of the model performance statistics across these five runs
+    metrics_df=pd.concat(metrics_all)
+    if if_RFE==0: # variable 'if_RFE' is defined only for handling which metrics reported if we are doing RFE or if we are not doing RFE
+        metrics_df = metrics_df[['AUC','micro_F1_score','weighted_F1_score','weighted_precision_score','weighted_recall_score']].describe().T[['mean','std']].stack().to_frame().T
+    else:
+        metrics_df = metrics_df[['AUC','micro_F1_score','weighted_F1_score']].describe().T[['mean','std']].stack().to_frame().T       
+    
+    #create the dataframe of the predictors' coefficients based on model type
+    if model=='LGB': 
+        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.feature_importances_,2))),columns=['Variable','coef_'])        
+        fig, ax = plt.subplots()
+        lgb.plot_importance(clf, ax=ax, max_num_features=100)
+        plt.title("Light GBM Feature Importance")
+    elif model=='MLP':
+        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.coefs_[0][:,0],2))),columns=['Variable','coef_'])
+    else:
+        df_coef_=pd.DataFrame(list(zip(name_cols, np.round(clf.coef_[0],5))),columns=['Variable','coef_']) 
+        if ((model=='LR') & (if_RFE==0)): 
+            #plot_precision_recall_curve
+            disp = plot_precision_recall_curve(clf, xtest, ytest)
+            disp.ax_.axis(ymin=0,ymax=1)
+            disp.ax_.set_title('2-class Precision-Recall curve')            
+            #calculate standard_errors 
+            predProbs = clf.predict_proba(X_train)
+            X_design = np.hstack([np.ones((X_train.shape[0], 1)), X_train])
+            V = np.product(predProbs, axis=1)
+            covLogit = np.linalg.pinv(np.dot((X_design.T * V), X_design))
+            standard_errors = np.sqrt(np.diag(covLogit))
+            df_coef_['standard_errors'] = standard_errors[1:]                
+    df_coef_['coef_abs']=df_coef_['coef_'].abs()    
+    
+    # return two dataframes
+    # one dataframe including the predictors' coefficients and statistics based on the selected algorithm
+    # the other dataframe including metrics (mean and std) evaluated on the test set
+    if ((model=='LR') & (if_RFE==0)):#when we want to report predicotrs' satandard_errors as well as their coefficients
+        return df_coef_.sort_values('coef_abs', ascending=False)[['coef_','Variable','standard_errors']], metrics_df#, scaler
+    else:
+        return df_coef_.sort_values('coef_abs', ascending=False)[['coef_','Variable']], metrics_df#, scaler
 
 # Featture selection by Recursive Feature Elimination (select features by recursively considering smaller and smaller sets of features)
 def my_RFE(df_new, col_y, my_range = range(1,11), my_C_range=[0.01,0.1,1], my_penalty='l1', class_weight='balanced', solver='liblinear'):            
