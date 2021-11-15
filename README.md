@@ -10,7 +10,7 @@ Step 1: Start with the section “load dataset”:
 
 Step 2: Go through the section “Statistical Feature Selection” 
 
-Step 3: Go through the section “implementation of the models” to implement\n
+Step 3: Go through the section “implementation of the models” to implement  
 -full models (i.e., least parsimonious) that contain all variables selected after statistical feature selection
 -sparse models that contain variables selected after both statistical feature selection and Recursive Feature Elimination (RFE)
 -parsimonious models that limit recursive feature elimination to select a model with up to 15 variables
