@@ -3,8 +3,8 @@
 
 This repository contains codes and models described in our paper, Predictive models of pregnancy based on data from a preconception cohort study.
 
-For models I or II, follow the instructions through "model_I_II.py".  
-For model III, follow the instructions through "model_III.py".  
+To use models I or II, follow the instructions through "model_I_II.py".  
+To use model III, follow the instructions through "model_III.py".  
 
 
 
