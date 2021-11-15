@@ -5,7 +5,7 @@ This repository contains codes and models described in our paper, Predictive mod
 
 To run the models:
 
-Step 1: Start with the section “load dataset”:
+Step 1: Start with the section “load dataset”:  
 -Load the dataset including the features and the label, in the format of pandas dataframe
 
 Step 2: Go through the section “Statistical Feature Selection” 
