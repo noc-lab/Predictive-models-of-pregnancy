@@ -3,7 +3,7 @@
 
 This repository contains codes and models described in our paper, Predictive models of pregnancy based on data from a preconception cohort study.
 
-To run the models, open the file "model_I_II.py":    
+To run the models I or II, open the file "model_I_II.py":    
 
 Step 1: Start with the section “load dataset”:  
 -Load the dataset including the features and the label, in the format of pandas dataframe
