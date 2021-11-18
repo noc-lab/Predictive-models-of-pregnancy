@@ -625,6 +625,7 @@ plt.show()
 
 # L2LR coefficients table with variable descriptions added from explain_Variables file
 name_ = stat_test(X, X[col_y])
+LRresult = LRresult.sort_values(ascending=False, by='coef_abs')
 result_table = LRresult.merge(name_, on='Variable').drop(['coef_abs'],axis=1)
 result_table
 
