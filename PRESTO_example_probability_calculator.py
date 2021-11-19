@@ -23,27 +23,9 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
 import os
-os.listdir('/home/zahra/Fall_2021/2021_Fall_upload_20211115/PRESTO_Fall_2021/20211104_HR_revision2_notes/')#DATA_PATH+
+os.listdir('/??????/')#DATA_PATH+
 
 def pregnancy_probability():
-    
-    Menstrual_cycle_length_days = 30
-    Female_age_at_baseline_years = 30
-    Urbanization_of_residential_area__rural = 0
-    Previously_tried_to_conceive_for_greater_than_or_equal_to_12_months__yes = 0
-    One_menstrual_cycle_of_attempt_time_at_study_entry = 1
-    Daily_use_of_multivitamins_or_folic_acid = 1
-    Last_method_of_contraception__hormonal_IUD = 0
-    Female_BMI_kg_m2 = 27
-    Ever_breastfed_an_infant = 1
-    Ever_been_pregnant = 1
-    Female_education_years = 16
-    Received_influenza_vaccine_in_the_past_year = 1
-    Perceived_Stress_Scale_score = 15
-    Total_number_of_pregnancies = 1
-    Urbanization_of_residential_area__Canada = 0
-    Urbanization_of_residential_area__urban_cluster = 0
-    Previously_tried_to_conceive_for_greater_than_or_equal_to_months__no_never_tried_before = 0
     
     Menstrual_cycle_length_days = input("Enter Menstrual cycle length (days): ")# for example: 30
 
