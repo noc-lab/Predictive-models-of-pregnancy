@@ -24,7 +24,7 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
 
-DATA_PATH = input("Enter the path to local destination folder: ") # /home/zahra/zahrazad/2021_Fall/PRESTO_Fall_2021/20211104_HR_revision2_notes/20211104_HR_revision2_notes_codes
+DATA_PATH = input("Enter the path to local destination folder: ") # /home/zahra/.../PRESTO_example
 
 import os
 os.listdir(str(DATA_PATH))#DATA_PATH+
