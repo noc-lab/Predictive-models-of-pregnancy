@@ -40,6 +40,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn
 import math
+from warnings import filterwarnings
+filterwarnings('ignore')
 sklearn.__version__
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
