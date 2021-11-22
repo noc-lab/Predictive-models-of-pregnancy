@@ -67,7 +67,7 @@ def pregnancy_probability():
 
     
     variable_dict = {
-        'ageatqstn' : (float(Female_age_at_baseline_years)-29.805008)/3.751832,
+        'ageatqstn' : (float(Female_age_at_baseline_years)-29.805008)/3.751832, #standardization
         'b_everpregnant': (float(Ever_been_pregnant)-0.501721)/0.500075,
         'b_gravid': (float(Total_number_of_pregnancies)-0.964632)/1.392237,
         'b_fluvacc': (float(Received_influenza_vaccine_in_the_past_year)-0.525196)/0.499443,
