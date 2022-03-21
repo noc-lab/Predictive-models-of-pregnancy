@@ -17,11 +17,15 @@ To use this example, download the folder "PRESTO_example" and run the jupyter no
 If you use the code, please cite this paper:
 
 ```text
-@article{yland2021predictive,
+@article{yland2022predictive,
   title={Predictive models of pregnancy based on data from a preconception cohort study},
   author={Yland, Jennifer J and Wang, Taiyao and Zad, Zahra and Willis, Sydney K and Wang, Tanran R and Wesselink, Amelia K and Jiang, Tammy and Hatch, Elizabeth E and Wise, Lauren A and Paschalidis, Ioannis Ch},
-  journal={Human reproduction},
-  year={2021}
+  journal={Human Reproduction},
+  volume={37},
+  number={3},
+  pages={565--576},
+  year={2022},
+  publisher={Oxford University Press}
 }
 ```
 
